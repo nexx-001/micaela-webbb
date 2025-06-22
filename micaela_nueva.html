@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para Micaela 💖</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: auto;
+      background: radial-gradient(#ffe4e1, #fff0f5);
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+    }
+
+    #contenido {
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      margin-top: 30px;
+      color: #d10068;
+      font-size: 28px;
+      padding: 0 15px;
+      display: none;
+      animation: brillo 2s infinite;
+    }
+
+    @keyframes brillo {
+      0%, 100% { text-shadow: 0 0 10px #ff85c1; }
+      50% { text-shadow: 0 0 20px #ff1493, 0 0 30px #ff69b4; }
+    }
+
+    #mensaje, #pregunta, #respuesta {
+      display: none;
+      margin: 20px auto;
+      font-size: 20px;
+      max-width: 90%;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    #corazonInicio {
+      font-size: 90px;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      animation: latido 1s infinite;
+    }
+
+    @keyframes latido {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.2); }
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      background-color: #ff69b4;
+      color: white;
+      cursor: pointer;
+    }
+
+    .corazon {
+      position: fixed;
+      top: -30px;
+      font-size: 20px;
+      opacity: 0.3;
+      animation: caer 10s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes caer {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100vh); }
+    }
+  </style>
+</head>
+<body>
+
+<audio id="musica" src="musica_micaela.mp3" autoplay loop></audio>
+
+<div id="corazonInicio">❤️</div>
+
+<div id="contenido">
+  <h1 id="titulo">¡Feliz 4° mes, Micaela! 💞</h1>
+  <div id="mensaje"></div>
+
+  <div id="pregunta">
+    <strong>¿Te quieres casar conmigo? 💍</strong><br>
+    <button onclick="responder('si')">Sí</button>
+    <button onclick="responder('no')">No</button>
+  </div>
+
+  <div id="respuesta"></div>
+</div>
+
+<script>
+  const musica = document.getElementById("musica");
+  const corazonInicio = document.getElementById("corazonInicio");
+  const mensajeDiv = document.getElementById("mensaje");
+  const titulo = document.getElementById("titulo");
+  const pregunta = document.getElementById("pregunta");
+  const respuestaDiv = document.getElementById("respuesta");
+
+  const textoMensaje = `
+Micaela, mi princesa hermosa 👸🏻💗  
+Hoy celebramos 4 meses desde que comenzamos esta hermosa historia de amor.  
+Una historia que, aunque no siempre fue fácil, ha sido real, fuerte y llena de sentimientos.  
+
+Pasamos por discusiones, silencios, malentendidos...  
+Pero también por risas, llamadas eternas, mensajes que me hicieron llorar de amor  
+y momentos donde solo tú sabías calmar mi alma. 💖  
+
+La distancia a veces duele, pero tú la haces llevadera.  
+Con cada “te amo”, con cada beso virtual, con cada nota de voz llena de ternura,  
+me recuerdas que amar es más que estar cerca… es estar presente en el corazón. 💌  
+
+Gracias por cada minuto, por no rendirte, por quedarte.  
+Por ser esa persona que llegó cuando más necesitaba amor.  
+Por ser luz en mis días grises, calma en mis tormentas, y mi lugar seguro.  
+
+Y por eso…  
+Hoy quiero preguntarte algo que me nace desde lo más profundo del alma:  
+¿Te casarías conmigo, Micaela? 💍🥺  
+¿Compartirías tu vida conmigo, como yo quiero compartir la mía contigo?
+  `;
+
+  const respuestaSi = [
+    "💍😭 ¡SÍ! ¡Mi amor, me hiciste el más feliz del mundo!",
+    "💘 Prometo cuidarte, respetarte y amarte para siempre.",
+    "🌹 Gracias por elegirme. Tú eres mi para siempre."
+  ];
+
+  const respuestaNo = [
+    "💔 Está bien, amor... lo entiendo.",
+    "😔 Aún así, te seguiré amando con todo mi corazón.",
+    "🌧️ Y si algún día cambias de opinión... aquí estaré esperándote."
+  ];
+
+  function iniciar() {
+    corazonInicio.style.display = "none";
+    musica.play();
+    titulo.style.display = "block";
+    escribirTexto(textoMensaje, mensajeDiv, () => {
+      pregunta.style.display = "block";
+    });
+  }
+
+  function escribirTexto(texto, elemento, callback) {
+    let i = 0;
+    elemento.innerHTML = "";
+    elemento.style.display = "block";
+
+    function escribir() {
+      if (i < texto.length) {
+        elemento.innerHTML += texto[i] === "\n" ? "<br>" : texto[i];
+        i++;
+        setTimeout(escribir, 35);
+      } else {
+        callback();
+      }
+    }
+    escribir();
+  }
+
+  function responder(opcion) {
+    localStorage.setItem("eleccionMicaela", opcion);
+    pregunta.style.display = "none";
+    mostrarRespuesta(opcion);
+  }
+
+  function mostrarRespuesta(opcion) {
+    respuestaDiv.innerHTML = "";
+    respuestaDiv.style.display = "block";
+    const mensajes = opcion === "si" ? respuestaSi : respuestaNo;
+
+    let i = 0;
+    function mostrar() {
+      if (i < mensajes.length) {
+        const p = document.createElement("p");
+        p.innerHTML = mensajes[i];
+        respuestaDiv.appendChild(p);
+        i++;
+        setTimeout(mostrar, 1500);
+      }
+    }
+    mostrar();
+  }
+
+  const guardado = localStorage.getItem("eleccionMicaela");
+  if (guardado) {
+    corazonInicio.style.display = "none";
+    titulo.style.display = "block";
+    mensajeDiv.style.display = "block";
+    mostrarRespuesta(guardado);
+  } else {
+    corazonInicio.addEventListener("click", iniciar);
+  }
+
+  const corazones = [
+  "❤️", "🧡", "💛", "💚", "🩵", "💙", "💜", "🤎", "🖤", "🩶", "🤍", "🩷",
+  "💘", "💝", "💖", "💗", "💓", "💞", "💕", "♥️", "❣️", "❤️‍🔥", "❤️‍🩹"
+];
+  function crearCorazon() {
+    const corazon = document.createElement("div");
+    corazon.classList.add("corazon");
+    corazon.style.left = Math.random() * 100 + "vw";
+    corazon.style.fontSize = (Math.random() * 15 + 15) + "px";
+    corazon.innerText = corazones[Math.floor(Math.random() * corazones.length)];
+    document.body.appendChild(corazon);
+    setTimeout(() => corazon.remove(), 10000);
+  }
+  setInterval(crearCorazon, 300);
+
+  // Reinicio secreto: dos toques en esquina superior izquierda
+  let toques = 0;
+  let tiempo = null;
+
+  document.body.addEventListener("click", (e) => {
+    const ancho = window.innerWidth;
+    const alto = window.innerHeight;
+
+    if (e.clientX < ancho * 0.2 && e.clientY < alto * 0.2) {
+      toques++;
+      clearTimeout(tiempo);
+      tiempo = setTimeout(() => toques = 0, 400);
+      if (toques === 2) {
+        localStorage.removeItem("eleccionMicaela");
+        location.reload();
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
